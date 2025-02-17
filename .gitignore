@@ -3,5 +3,8 @@
 /terrademo/keys
 /terrademo/.terraform
 /terraform-demo-449904-0f6ce6e3fce8.json
+/02-workflow-orchestration/keys
+
 terraform.*
 *.terraform*
+*.~lock*
