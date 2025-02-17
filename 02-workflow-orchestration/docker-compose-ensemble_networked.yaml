@@ -1,0 +1,126 @@
+networks:
+  network1:
+    name: zoomcamp-network
+    driver: bridge
+    attachable: true
+    # ipam:
+    #   driver: default
+    #   config:
+    #     - subnet: 172.18.0.0/16
+    #       ip_range: 172.18.5.0/24
+    #       gateway: 172.18.0.1
+
+# Using named docker volumes to not have to bind specific folders and have docker manage them instead.
+volumes:
+  kestra-db-vol:
+    driver: local
+  kestra-data:
+    driver: local
+  zoomcamp-db-vol:
+    driver: local
+
+services:
+  kestra_db:
+    image: postgres:latest
+    volumes:
+      - kestra-db-vol:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: kestra
+      POSTGRES_USER: kestra
+      POSTGRES_PASSWORD: k3str4
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    networks:
+      - network1
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+
+  kestra:
+    image: kestra/kestra:latest
+    pull_policy: always
+    # Note that this setup with a root user is intended for development purpose.
+    # Our base image runs without root, but the Docker Compose implementation needs root to access the Docker socket
+    # To run Kestra in a rootless mode in production, see: https://kestra.io/docs/installation/podman-compose
+    user: "root"
+    command: server standalone
+    volumes:
+      - kestra-data:/app/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/kestra-wd:/tmp/kestra-wd
+    environment:
+      KESTRA_CONFIGURATION: |
+        datasources:
+          postgres:
+            url: jdbc:postgresql://kestra_db:5432/kestra
+            driverClassName: org.postgresql.Driver
+            username: kestra
+            password: k3str4
+        kestra:
+          server:
+            basicAuth:
+              enabled: false
+              username: "admin@kestra.io" # it must be a valid email address
+              password: kestra
+          repository:
+            type: postgres
+          storage:
+            type: local
+            local:
+              basePath: "/app/storage"
+          queue:
+            type: postgres
+          tasks:
+            tmpDir:
+              path: /tmp/kestra-wd/tmp
+          url: http://localhost:8080/
+          tutorialFlows:
+            enabled: false # true by default
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    depends_on:
+      kestra_db:
+        condition: service_started
+    networks:
+      - network1
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+
+
+# Services for the local database which will have the data for the course. The other postgres is for kestra specifically        
+  zoomcamp_db:
+    image:  postgres:latest
+    container_name: zoomcamp_db
+    environment:
+      - POSTGRES_USER=kestra
+      - POSTGRES_PASSWORD=k3str4
+      - POSTGRES_DB=zoomcamp-postgres-db
+    volumes:
+      - zoomcamp-db-vol:/var/lib/postgresql/data:rw  # NOTE: it's not necessary to specify rw mode, but for completeness it's ok
+    ports:
+      - "5432:5432"    #NOTE: Both postgres can be in the same network and port, you can use the service name to differenciate.
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+    networks:
+      - network1
+    depends_on:
+      kestra:
+        condition: service_started
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@admin.com
+      - PGADMIN_DEFAULT_PASSWORD=root
+    ports:
+      - "8085:80"
+    networks:
+      - network1
+    # extra_hosts:
+    #   - "host.docker.internal:host-gateway"
+    depends_on:
+      zoomcamp_db:
+        condition: service_started
