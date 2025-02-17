@@ -1,3 +1,7 @@
-/01-docker-terraform
-/terrademo
+/01-docker-terraform/2_docker_sql/ny_taxi_postgres_data
+/01-docker-terraform/2_docker_sql/.ipynb_checkpoints
+/terrademo/keys
+/terrademo/.terraform
 /terraform-demo-449904-0f6ce6e3fce8.json
+terraform.*
+*.terraform*
