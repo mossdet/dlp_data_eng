@@ -1,9 +1,9 @@
-/01-docker-terraform/2_docker_sql/ny_taxi_postgres_data
-/01-docker-terraform/2_docker_sql/.ipynb_checkpoints
-/terrademo/keys
-/terrademo/.terraform
-/terraform-demo-449904-0f6ce6e3fce8.json
-/02-workflow-orchestration/keys
+/01-docker-sql-terraform/ny_taxi_postgres_data
+/01-docker-sql-terraform/.ipynb_checkpoints
+/01-docker-sql-terraform/terrademo/keys
+/01-docker-sql-terraform/terrademo/.terraform
+/01-docker-sql-terraform/terraform-demo-449904-0f6ce6e3fce8.json
+/GCP_Keys
 
 terraform.*
 *.terraform*
