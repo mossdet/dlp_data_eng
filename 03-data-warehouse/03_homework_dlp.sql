@@ -1,4 +1,13 @@
 ###########################
+# Question 1
+# Number of rows in table
+SELECT 
+  Count(1) as cntr
+FROM 
+  kestra-dlp-sandbox.de_zoomcamp.03_datawarehouse_hw_dlp_reg;
+
+
+###########################
 # Question 2
 # Write a query to count the distinct number of PULocationIDs for the entire dataset on both the tables.
 # What is the estimated amount of data that will be read when this query is executed on the External Table and the Table?
@@ -50,9 +59,10 @@ WHERE
 # (Create a new table with this strategy)
 CREATE OR REPLACE TABLE kestra-dlp-sandbox.de_zoomcamp.03_datawarehouse_hw_dlp_partitioned_clustered
 PARTITION BY DATE(tpep_dropoff_datetime)
-CLUSTER BY 
-  VendorID AS
-    SELECT * FROM kestra-dlp-sandbox.de_zoomcamp.03_datawarehouse_hw_dlp_ext;
+CLUSTER BY VendorID 
+  AS
+  SELECT * 
+  FROM kestra-dlp-sandbox.de_zoomcamp.03_datawarehouse_hw_dlp_ext;
 
 
 ###########################
