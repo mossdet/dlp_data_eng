@@ -6,10 +6,10 @@ import time
 
 
 #Change this to your bucket name
-BUCKET_NAME = "dateng_dlp_hw3_2025"  
+BUCKET_NAME = "dlp-dateng-04-bucket"  
 
 #If you authenticated through the GCP SDK you can comment out these two lines
-CREDENTIALS_FILE = "/home/dlp/Documents/data_eng_ed/dlp_data_eng/GCP_Keys/kestra-dlp-sandbox-79be04c1f0b0.json"  
+CREDENTIALS_FILE = "/home/dlp/Documents/data_eng_ed/dlp_data_eng/GCP_keys/dlp-dateng-04-d79fa6efa9dd.json"  
 
 client = storage.Client.from_service_account_json(CREDENTIALS_FILE)
 
