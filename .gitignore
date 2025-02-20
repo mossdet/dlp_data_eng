@@ -8,3 +8,7 @@
 terraform.*
 *.terraform*
 *.~lock*
+*key*
+*Key*
+*.mp3
+*.mp4
