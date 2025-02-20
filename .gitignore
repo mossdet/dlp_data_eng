@@ -4,6 +4,7 @@
 /01-docker-sql-terraform/terrademo/.terraform
 /01-docker-sql-terraform/terraform-demo-449904-0f6ce6e3fce8.json
 /GCP_Keys
+*/Downloads
 
 terraform.*
 *.terraform*
@@ -12,3 +13,6 @@ terraform.*
 *Key*
 *.mp3
 *.mp4
+*.parquet
+*.csv
+
