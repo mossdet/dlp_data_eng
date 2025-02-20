@@ -1,0 +1,24 @@
+id: test_foreach
+namespace: de_04
+description: |
+  Load Parquet files from the website containing the New Yorc City Taxi Data into the Data Lake (GCS Bucket)
+
+tasks:
+  - id: parallel_data_load
+    type: io.kestra.plugin.core.flow.ForEach
+    concurrencyLimit: 1
+    values: [yellow, green]
+
+    tasks:
+      - id: return_filename
+        type: io.kestra.plugin.core.debug.Return
+        format: "https://d37ci6vzurychx.cloudfront.net/trip-data/{{ taskrun.value }}_tripdata_2024-01.parquet"
+
+      # - id: extract
+      #   type: io.kestra.plugin.scripts.shell.Commands
+      #   outputFiles:
+      #     - "*.parquet"
+      #   taskRunner:
+      #     type: io.kestra.plugin.core.runner.Process
+      #   commands:
+      #     - wget -qO- "https://d37ci6vzurychx.cloudfront.net/trip-data/{{ taskrun.value }}_tripdata_2024-01.parquet"

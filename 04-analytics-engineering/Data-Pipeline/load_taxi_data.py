@@ -105,7 +105,7 @@ if __name__ == "__main__":
             with ThreadPoolExecutor(max_workers=PARALL_WORKERS) as executor:
                 file_paths = executor.map(convert_to_parquet, filter(None, file_paths))  # Remove None values
 
-            # with ThreadPoolExecutor(max_workers=PARALL_WORKERS) as executor:
-            #     executor.map(upload_to_gcs, filter(None, file_paths))  # Remove None values
+            with ThreadPoolExecutor(max_workers=PARALL_WORKERS) as executor:
+                executor.map(upload_to_gcs, filter(None, file_paths))  # Remove None values
 
     print("All files processed and verified.")

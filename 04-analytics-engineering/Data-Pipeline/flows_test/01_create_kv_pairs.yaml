@@ -1,0 +1,33 @@
+id: 01_create_kv_pairs
+namespace: de_04
+
+tasks:
+  - id: gcp_creds
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_CREDS
+    kvType: STRING
+    value: "" # Create empty string, replace with GCP key file content
+
+  - id: gcp_project_id
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_PROJECT_ID
+    kvType: STRING
+    value: dlp-dateng-04 # TODO replace with your project id, mus be globally unique!
+
+  - id: gcp_location
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_LOCATION
+    kvType: STRING
+    value: US-WEST3
+
+  - id: gcp_bucket_name
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_BUCKET_NAME
+    kvType: STRING
+    value: dlp-dateng-04-bucket # TODO make sure it's globally unique!
+
+  - id: gcp_dataset
+    type: io.kestra.plugin.core.kv.Set
+    key: GCP_DATASET
+    kvType: STRING
+    value: de_04_dataset
