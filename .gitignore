@@ -16,3 +16,9 @@ terraform.*
 *.parquet
 *.csv
 
+
+
+#dbt
+*target/
+*dbt_packages/
+*logs/
