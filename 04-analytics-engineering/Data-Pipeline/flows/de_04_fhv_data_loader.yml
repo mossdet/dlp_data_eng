@@ -1,0 +1,44 @@
+id: fhv_data_loader
+namespace: de_04
+
+variables:
+  file: "fhv_tripdata_{{trigger.date | date('yyyy-MM')}}.csv"
+  gcs_file: "gs://{{kv('GCP_BUCKET_NAME')}}/{{vars.file}}"
+  table: "{{kv('GCP_DATASET')}}.fhv_tripdata_{{trigger.date | date('yyyy-MM')}}."
+  data: "{{outputs.extract.outputFiles['fhv_tripdata_' ~ (trigger.date | date('yyyy-MM')) ~ '.csv']}}"
+  #data:"{{outputs.extract.outputFiles[inputs.taxi ~ '_tripdata_' ~ inputs.year ~ '-' ~ inputs.month ~ '.csv']}}"
+
+tasks:
+  - id: set_label
+    type: io.kestra.plugin.core.execution.Labels
+    labels:
+      file: "{{render(vars.file)}}"
+      date: "{{(trigger.date | date('yyyy-MM'))}}"
+
+  - id: extract
+    type: io.kestra.plugin.scripts.shell.Commands
+    outputFiles:
+      - "*.csv"
+    taskRunner:
+      type: io.kestra.plugin.core.runner.Process
+    commands:            
+      - wget -qO- https://github.com/DataTalksClub/nyc-tlc-data/releases/download/fhv/{{render(vars.file)}}.gz | gunzip > {{render(vars.file)}}
+
+
+  - id: upload_to_gcs
+    type: io.kestra.plugin.gcp.gcs.Upload
+    from: "{{render(vars.data)}}"
+    to: "{{render(vars.gcs_file)}}"
+
+pluginDefaults:
+  - type: io.kestra.plugin.gcp
+    values:
+      serviceAccount: "{{kv('GCP_CREDS')}}"
+      projectId: "{{kv('GCP_PROJECT_ID')}}"
+      location: "{{kv('GCP_LOCATION')}}"
+      bucket: "{{kv('GCP_BUCKET_NAME')}}"
+
+triggers:
+  - id: fhv_schedule
+    type: io.kestra.plugin.core.trigger.Schedule
+    cron: "0 9 1 * *"
