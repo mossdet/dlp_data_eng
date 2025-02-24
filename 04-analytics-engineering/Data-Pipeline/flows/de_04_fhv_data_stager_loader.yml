@@ -47,6 +47,7 @@ tasks:
       )
       PARTITION BY DATE(pickup_datetime);
 
+  # Create table with raw data
   - id: bq_fhv_tripdata_ext
     type: io.kestra.plugin.gcp.bigquery.Query
     sql: |
@@ -67,6 +68,24 @@ tasks:
           ignore_unknown_values = TRUE
       );
 
+  # Create materialized table with raw data
+  - id: bq_fhv_tripdata_stg
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_clean` AS
+      SELECT *
+      FROM `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_ext`;
+
+  # Clean data
+  - id: bq_fhv_tripdata_clean
+    type: io.kestra.plugin.gcp.bigquery.Query
+    sql: |
+      CREATE OR REPLACE TABLE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_clean` AS
+      SELECT
+      TRIM(dispatching_base_num) as dispatching_base_num, pickup_datetime, dropoff_datetime, PULocationID, DOLocationID, SR_Flag, Affiliated_base_number
+      FROM `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_clean`;
+#UPDATE `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_clean`  set dispatching_base_num = TRIM(dispatching_base_num);
+
   # add unique identifier and source filename
   - id: bq_fhv_tripdata_temp
     type: io.kestra.plugin.gcp.bigquery.Query
@@ -83,7 +102,7 @@ tasks:
         )) AS unique_row_id,
         "{{render(vars.file)}}" AS filename,
         *
-      FROM `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_ext`;
+      FROM `{{kv('GCP_PROJECT_ID')}}.{{render(vars.table)}}_clean`;
 
   - id: bq_fhv_merge
     type: io.kestra.plugin.gcp.bigquery.Query
@@ -95,13 +114,19 @@ tasks:
         INSERT (unique_row_id, filename, dispatching_base_num, pickup_datetime, dropoff_datetime, PULocationID, DOLocationID, SR_Flag, Affiliated_base_number)
         VALUES (S.unique_row_id, S.filename, S.dispatching_base_num, S.pickup_datetime, S.dropoff_datetime, S.PULocationID, S.DOLocationID, S.SR_Flag, S.Affiliated_base_number);
 
-  - id: bq_delete_table_tmp
+  - id: bq_delete_table_ext
     type: io.kestra.plugin.gcp.bigquery.DeleteTable
     projectId: "{{kv('GCP_PROJECT_ID')}}"
     dataset: "{{kv('GCP_DATASET')}}"
     table: "fhv_tripdata_{{trigger.date | date('yyyy-MM')}}_ext"
   
-  - id: bq_delete_table_ext
+  - id: bq_delete_table_clean
+    type: io.kestra.plugin.gcp.bigquery.DeleteTable
+    projectId: "{{kv('GCP_PROJECT_ID')}}"
+    dataset: "{{kv('GCP_DATASET')}}"
+    table: "fhv_tripdata_{{trigger.date | date('yyyy-MM')}}_clean"
+
+  - id: bq_delete_table_merge
     type: io.kestra.plugin.gcp.bigquery.DeleteTable
     projectId: "{{kv('GCP_PROJECT_ID')}}"
     dataset: "{{kv('GCP_DATASET')}}"
