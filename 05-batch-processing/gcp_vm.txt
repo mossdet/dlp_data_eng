@@ -1,0 +1,2 @@
+log into VM:
+ssh -i ~/.ssh/gcp dlp@34.106.221.185
