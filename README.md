@@ -15,6 +15,30 @@ Projects covering data engineering practices and tools.
 
 ## Structure
 
+```mermaid
+flowchart TD
+    A[01-docker-sql-terraform] --> B[02-workflow-orchestration]
+    A --> C[03-data-warehouse]
+    B --> D[03-dlt-workshop]
+    C --> D
+    D --> E[04-analytics-engineering]
+    E --> F[05-batch-processing]
+    
+    A1[Docker & SQL<br/>PostgreSQL<br/>Terraform]
+    B1[Kestra<br/>Pipeline Scheduling<br/>Orchestration]
+    C1[BigQuery<br/>Data Warehouse<br/>SQL Analytics]
+    D1[dlt Framework<br/>Data Ingestion<br/>ETL Patterns]
+    E1[dbt<br/>Data Transformation<br/>Analytics Engineering]
+    F1[Spark<br/>Distributed Processing<br/>Big Data]
+    
+    A --- A1
+    B --- B1
+    C --- C1
+    D --- D1
+    E --- E1
+    F --- F1
+```
+
 - **01-docker-sql-terraform** - Containerization, databases, and infrastructure
 - **02-workflow-orchestration** - Pipeline orchestration and scheduling
 - **03-data-warehouse** - Data warehousing concepts and BigQuery
