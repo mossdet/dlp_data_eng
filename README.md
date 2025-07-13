@@ -84,7 +84,3 @@ Each module contains its own examples and exercises. Navigate to the respective 
 ## Notes
 
 Documentation and reference materials are available in the `Notes/` directory.
-
-## Contributing
-
-Feel free to submit issues or improvements. This is a learning project.
