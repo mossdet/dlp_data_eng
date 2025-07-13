@@ -16,9 +16,112 @@ terraform.*
 *.parquet
 *.csv
 
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
-#dbt
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# Data files
+*.json
+*.xml
+*.avro
+*.orc
+*.h5
+*.hdf5
+*.pickle
+*.pkl
+*.db
+*.sqlite
+*.sqlite3
+
+# Docker
+.dockerignore
+docker-compose.override.yml
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfplan
+.terraform/
+.terraform.lock.hcl
+
+# Spark
+spark-warehouse/
+derby.log
+metastore_db/
+
+# Airflow
+airflow.cfg
+airflow.db
+dags/__pycache__/
+logs/
+plugins/__pycache__/
+
+# dbt
 *target/
 *dbt_packages/
 *logs/
+profiles.yml
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+*.out
+*.err
+
+# Secrets and credentials
+*.pem
+*.p12
+*.crt
+*.csr
+*credentials*
+*secret*
+*password*
+.secrets/
